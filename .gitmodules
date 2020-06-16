@@ -1,0 +1,3 @@
+[submodule "bayes-treesurv-gp"]
+	path = bayes-treesurv-gp
+	url = git@github.com:EliLillyCo/bayes-treesurv-gp.git
