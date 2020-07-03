@@ -25,7 +25,7 @@ run_bart <- function(dat) {
 
 run_predict <- function(post, dat) {
   x <- get_x(dat)
-  ind <- 345
+  ind <- 407
   pre <- surv.pre.bart(
     times = dat$time,
     delta = dat$observed,
@@ -36,7 +36,7 @@ run_predict <- function(post, dat) {
   return(pred)
 }
 
-get_plot <- function(post, pred) {
+get_plot_data <- function(post, pred) {
   qtls <- apply(pred$surv.test,2,quantile,probs=c(.025,.975))
   b <- pred$tx.test[1, 'biomarker']
   trt <- pred$tx.test[1, 'trt']
@@ -51,7 +51,10 @@ get_plot <- function(post, pred) {
     lb = qtls[1, ],
     ub = qtls[2, ],
     true_surv = true_surv
-  ) 
+  )
+}
+
+get_plot <- function(dat_plot) {
   p <- ggplot(dat_plot, aes(time)) +
     geom_line(aes(y = mean), linetype = 3) +
     geom_line(aes(y = lb), linetype = 2) +
@@ -71,7 +74,9 @@ plan <- drake_plan(
   ),
   post = run_bart(dat),
   pred = run_predict(post, dat),
-  bart_plot = get_plot(post, pred)
+  plot_data = get_plot_data(post, pred),
+  plot_data_file = write.csv(plot_data, file_out("bart_pred.csv"), row.names = FALSE),
+  bart_plot = get_plot(plot_data)
 )
 
 make(plan)

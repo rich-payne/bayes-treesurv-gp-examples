@@ -1,6 +1,6 @@
 addpath(genpath('../bayes-treesurv-gp'));
 
-rng(358);
+rng(3589);
 n = 1000;
 x_biomarker = rand(n, 1);
 x_trt = binornd(1, .5, n, 1);
@@ -18,18 +18,24 @@ censored = y_cens < y_true;
 y = y_true;
 y(censored) = y_cens(censored);
 
+X_table = array2table(X(:, [1, 2]), 'VariableNames', {'biomarker', 'trt'});
+Y = [y, abs(censored - 1)];
+writematrix([Y, X(:, [1, 2])], 'pred_prog.csv');
+Tree_Surv(Y, X_table, 'burn', 0, 'nmcmc', 10000, 'filepath', '../output/pred_prog/', 'saveall', 1, 'seed', 1990, 'n_parallel_temp', 8);
+
+% plots
+load('../output/pred_prog/mcmc_id1.mat');
+[~, I] = max(output.llike + output.lprior);
+thetree = output.Trees{I};
+Treeplot(thetree, Y, X_table, 0)
+
+% Truth vs cox PH
+% Get the estimate from the model vs true hazard
 [b, logl, H, stats] = coxphfit(X, y, 'Censoring', censored);
 stats.p; % p-values
 b; % coefficients
 params = mvnrnd(b, stats.covb, 1e5)';
-
-hold on;
-ecdf(y(x_trt == 0), 'function', 'survivor');
-ecdf(y(x_trt == 1), 'function', 'survivor');
-hold off;
-
-% Get the estimate from the model vs true hazard
-subj_index = 82;
+subj_index = 407;
 H2 = [[0, 0]; H];
 samps = zeros(size(params, 2), size(H2, 1));
 for ii=1:size(params, 2)
@@ -39,14 +45,11 @@ for ii=1:size(params, 2)
     surv_func = exp(-cum_hazard);
     samps(ii, :) = surv_func;
 end
-
 qtls = quantile(samps, [.025, .975]);
 muhat = mean(samps);
-
-% Truth vs cox PH
 w_shape_pat = a_shape + b_shape * x_biomarker(subj_index);
 w_scale_pat = a_scale + b_scale * x_trt(subj_index) .* x_biomarker(subj_index);
-
+subplot(1, 3, 1);
 plot(H2(:, 1), muhat, 'k:', H2(:, 1), qtls(1, :), 'k--', H2(:, 1), qtls(2, :), 'k--')
 hold on
 plot(H2(:, 1), 1 - wblcdf(H2(:, 1), w_scale_pat, w_shape_pat), 'k');
@@ -55,23 +58,28 @@ title('Cox Proportional Hazard');
 ylabel('survival');
 xlabel('time');
 
-X_table = array2table(X(:, [1, 2]), 'VariableNames', {'biomarker', 'trt'});
-Y = [y, abs(censored - 1)];
-% writematrix([Y, X(:, [1, 2])], 'pred_prog.csv');
-Tree_Surv(Y, X_table, 'burn', 0, 'nmcmc', 10000, 'filepath', '../output/pred_prog/', 'saveall', 1, 'seed', 1990);
+% BART
+subplot(1, 3, 2);
+db = readmatrix('../competingmethods/BART/bart_pred.csv');
+plot(db(:, 1), db(:, 2), 'k:', db(:, 1), db(:, 3), 'k--', db(:, 1), db(:, 4), 'k--', db(:, 1), db(:, 5), 'k')
+title('BART');
+ylabel('survival');
+xlabel('time');
 
-load('../output/pred_prog/mcmc_id1.mat');
-[~, I] = max(output.llike + output.lprior);
-thetree = output.Trees{I};
-Treeplot(thetree, Y, X_table, 1)
-
+% treed GP
+subplot(1, 3, 3);
 x0 = X_table(subj_index, :);
 get_surv_tree(thetree,Y,X_table,10000,1,x0,[],.05,'Treed GP')
 hold on;
 plot(H2(:, 1), 1 - wblcdf(H2(:, 1), w_scale_pat, w_shape_pat), 'k')
 hold off;
-xlim([0, 1.5]);
+xlim([0, 4]);
+ylim([0, 1]);
 ylabel('survival');
 xlabel('time');
+
+
+
+
 
 
