@@ -1,6 +1,6 @@
 addpath(genpath('../bayes-treesurv-gp'));
 
-rng(3589);
+rng(97891, 'twister');
 n = 1000;
 x_biomarker = rand(n, 1);
 x_trt = binornd(1, .5, n, 1);
@@ -35,7 +35,7 @@ Treeplot(thetree, Y, X_table, 0)
 stats.p; % p-values
 b; % coefficients
 params = mvnrnd(b, stats.covb, 1e5)';
-subj_index = 407;
+subj_index = 436;
 H2 = [[0, 0]; H];
 samps = zeros(size(params, 2), size(H2, 1));
 for ii=1:size(params, 2)
@@ -66,10 +66,10 @@ title('BART');
 ylabel('survival');
 xlabel('time');
 
-% treed GP
+% tree model
 subplot(1, 3, 3);
 x0 = X_table(subj_index, :);
-get_surv_tree(thetree,Y,X_table,10000,1,x0,[],.05,'Treed GP')
+get_surv_tree(thetree,Y,X_table,10000,1,x0,[],.05,'Tree Model')
 hold on;
 plot(H2(:, 1), 1 - wblcdf(H2(:, 1), w_scale_pat, w_shape_pat), 'k')
 hold off;

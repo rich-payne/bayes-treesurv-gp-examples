@@ -25,7 +25,7 @@ run_bart <- function(dat) {
 
 run_predict <- function(post, dat) {
   x <- get_x(dat)
-  ind <- 407
+  ind <- 436
   pre <- surv.pre.bart(
     times = dat$time,
     delta = dat$observed,
