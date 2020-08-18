@@ -1,3 +1,5 @@
+addpath(genpath('../bayes-treesurv-gp/'));
+
 % Generate a single covariate on which to partition
 rng(424)
 n = 1000;
@@ -29,13 +31,13 @@ Y = [y, delta];
 MCMC = 100; % MCMC iterations
 burn = 0; % burn in
 Kval = 100; % Number of bins for the hazard function
-fpath = './output/'; % directory to save results to
+fpath = '../output/tutorial/'; % directory to save results to
 saveall = 1; % save all the output from each tempered chain
 nprint = 10; % print MCMC info every 10 iterations
 swapfreq = 10; % propose a swap of parallel chains every 10 iterations
 
-% Start a parallel pool with 4 cores
-parpool(4);
+% Start a parallel pool with 4 cores (if parpool available)
+% parpool(4);
 
 % Run MCMC
 Tree_Surv(Y,X,'nmcmc',MCMC,'burn',burn,'filepath',fpath,...
@@ -44,17 +46,15 @@ Tree_Surv(Y,X,'nmcmc',MCMC,'burn',burn,'filepath',fpath,...
 
 % Load data from untempered chain
 load([fpath,'mcmc_id1.mat']);
-% Find tree with highest likelihood
-[~,I] = max(output.llike);
+% Find tree with highest posteior probability
+[~,I] = max(output.llike + output.lprior);
 % plot tree with highest likelihood (along with posterior survival curves)
 Treeplot(output.Trees{I}) % Simple plot of tree
 Treeplot(output.Trees{I},Y,X,0); % Tree with survival curves at terminal nodes
                                  % 0 indicates no Kaplan Meier curves overlayed
-mallow(output); % Mallow plot indicates 2 partition elements is best
-
 
 % Continue the MCMC chain using the 'resume' feature
-fpath2 = './output2/';
+fpath2 = '../output/tutorial2/';
 Tree_Surv(Y,X,'nmcmc',MCMC,'burn',burn,'filepath',fpath2,...
     'seed',1991,'bigK',Kval,'saveall',saveall,'swapfreq',swapfreq,...
     'nprint',nprint,'resume',fpath);
@@ -64,7 +64,6 @@ load([fpath2,'mcmc_id1.mat']);
 output2 = output; % store output from second (continued) run;
 
 % Look at second half of output;
-[~,I2] = max(output2.llike); % get highest likelihood 
+[~,I2] = max(output2.llike + output2.lprior); % get highest posterior probability
 Treeplot(output2.Trees{I2},Y,X,1); % 1 indicates Kaplan Meier curves overlayed
-mallow(output1,output2); % Mallow plot indicates 2 partition elements is best from both chains
   
