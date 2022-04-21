@@ -31,4 +31,4 @@ end
 load(['../output/pbc', num2str(ind, '%02i'), '/mcmc_id1.mat'])
 
 thetree = output.Trees{I0};
-Treeplot(thetree, Y, X, 0)
+Treeplot(thetree, Y, X, 2)
