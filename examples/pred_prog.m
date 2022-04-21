@@ -49,7 +49,7 @@ qtls = quantile(samps, [.025, .975]);
 muhat = mean(samps);
 w_shape_pat = a_shape + b_shape * x_biomarker(subj_index);
 w_scale_pat = a_scale + b_scale * x_trt(subj_index) .* x_biomarker(subj_index);
-subplot(1, 3, 1);
+subplot(1, 4, 1);
 plot(H2(:, 1), muhat, 'k:', H2(:, 1), qtls(1, :), 'k--', H2(:, 1), qtls(2, :), 'k--')
 hold on
 plot(H2(:, 1), 1 - wblcdf(H2(:, 1), w_scale_pat, w_shape_pat), 'k');
@@ -59,17 +59,28 @@ ylabel('survival');
 xlabel('time');
 
 % BART
-subplot(1, 3, 2);
+subplot(1, 4, 2);
 db = readmatrix('../competingmethods/BART/bart_pred.csv');
 plot(db(:, 1), db(:, 2), 'k:', db(:, 1), db(:, 3), 'k--', db(:, 1), db(:, 4), 'k--', db(:, 1), db(:, 5), 'k')
 title('BART');
 ylabel('survival');
 xlabel('time');
 
+% Random forest
+subplot(1, 4, 3)
+rf = readtable('../competingmethods/random_forest/random_forest_pred.csv');
+plot(rf.time, rf.mean, 'k:', rf.time, rf.lb, 'k--', rf.time, rf.ub, 'k--');
+hold on;
+plot(H2(:, 1), 1 - wblcdf(H2(:, 1), w_scale_pat, w_shape_pat), 'k')
+hold off;
+title('Random Forest');
+ylabel('survival');
+xlabel('time');
+
 % tree model
-subplot(1, 3, 3);
+subplot(1, 4, 4);
 x0 = X_table(subj_index, :);
-get_surv_tree(thetree,Y,X_table,10000,1,x0,[],.05,'Tree Model')
+get_surv_tree(thetree,Y,X_table,10000,1,x0,[],.05,'THM')
 hold on;
 plot(H2(:, 1), 1 - wblcdf(H2(:, 1), w_scale_pat, w_shape_pat), 'k')
 hold off;
