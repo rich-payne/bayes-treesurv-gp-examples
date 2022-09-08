@@ -1,16 +1,28 @@
-function [] = sim_true_tree(seed, sim_number)
-    addpath(genpath('../bayes-treesurv-gp/'));
+function [] = sim_true_tree(seed, sim_number, MCMC, n_reps)
+    if ischar(seed)
+        seed = str2double(seed);
+    end
+    if ischar(sim_number)
+        sim_number = str2double(sim_number);
+    end
+    if ischar(MCMC)
+        MCMC = str2double(MCMC);
+    end
+    if ischar(n_reps)
+        n_reps = str2double(n_reps);
+    end
+    
+    
     [Y, X] = gen_data_true_tree(seed);
 
     % SETTINGS FOR THE USER TO CHANGE
     lowrep = 1;
-    highrep = 5;
+    highrep = 2;
 
-    MCMC = 10000; % MCMC iterations
     Kvals = 20;
     SEEDS = seed .* (1:highrep); % Seed for K = 20
     cntr = 1;
-    for rep = lowrep:highrep
+    for rep = 1:n_reps
         basename = ['../output/sim_true_tree_simnum_', num2str(sim_number), '_rep_'];
         fname = strcat([basename, num2str(rep), '/']);
         % Run the code
