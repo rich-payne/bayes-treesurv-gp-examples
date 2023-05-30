@@ -18,7 +18,6 @@ list(
     fit,
     rfsrc(Surv(time, observed) ~ ., data = data, ntree = 1000, block.size = 1)
   ),
-  # tar_target(tree, plot(get.tree(fit, 3))),
   tar_target(
     pred,
     purrr::map_dfr(

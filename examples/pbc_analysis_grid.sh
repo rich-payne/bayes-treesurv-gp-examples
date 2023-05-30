@@ -1,0 +1,10 @@
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 1 1 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 2 2 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 3 3 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 4 4 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 5 5 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 6 6 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 7 7 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 8 8 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 9 9 2
+./pbc_analysisstandaloneApplication/run_pbc_analysis.sh /lrlhps/apps/bioinfo/matlab/matlab_2022a 'pbc_kfold.csv' 10 10 2

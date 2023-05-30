@@ -1,0 +1,15 @@
+.drake
+*.err
+*.out
+output/
+*.db
+*.fig
+*.eps
+.Rproj.user
+_targets/
+*.csv
+*.asv
+clustermq.tmpl
+*.rds
+*.html
+*standaloneApplication/

@@ -1,0 +1,56 @@
+---
+title: "PBC Analysis"
+author: "Richard Payne"
+date: '2023-05-20'
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Random forest
+
+```{r}
+library(targets)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
+tar_load(forest_fit)
+print(vimp(forest_fit)$importance)
+```
+
+```{r}
+tar_load(bart_fit)
+sort(apply(bart_fit$varcount, 2, mean), decreasing = TRUE)
+```
+
+```{r}
+tar_load(c(brier_bart, brier_forest, brier_tree))
+brier <- bind_rows(brier_bart, brier_forest) %>%
+  pivot_longer(
+    c("brier", "brier_miss"),
+    names_to = "type",
+    values_to = "brier"
+  )
+brier_tree <- brier_tree %>%
+  pivot_longer(everything(), names_to = "t_chr", values_to = "brier_miss") %>%
+  mutate(
+    time = case_when(
+      t_chr == "V1" ~ 617,
+      t_chr == "V2" ~ 1181,
+      t_chr == "V3" ~ 1788,
+      t_chr == "V4" ~ 2691,
+      t_chr == "V5" ~ 3608
+    ),
+    model = "tree"
+  ) %>%
+  select(-t_chr) %>%
+  pivot_longer("brier_miss", names_to = "type", values_to = "brier")
+brier <- bind_rows(brier, brier_tree)
+ggplot(brier, aes(factor(time), brier, fill = model)) +
+  facet_wrap(~type) +
+  geom_boxplot()
+```

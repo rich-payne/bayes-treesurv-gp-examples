@@ -16,8 +16,8 @@ run_bart <- function(dat) {
     x.train = x,
     times = dat$time,
     delta = dat$observed,
-    nskip = 1000,
-    ndpost = 1000,
+    nskip = 1e3,
+    ndpost = 1e3,
     keepevery = 2
   )
   return(post)

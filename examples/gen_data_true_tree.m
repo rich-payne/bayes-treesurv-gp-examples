@@ -1,4 +1,4 @@
-function [Y, X] = gen_data_true_tree(seed)
+function [Y, X, Y_uncensored] = gen_data_true_tree(seed)
 % Create custom survival function
     times = [0,1,2,3,4,5,6,7,8,9,10,11];
     surv = [1,.9,.85,.5,.45,.44,.43,.1,.09,.05,.01,0];
@@ -29,6 +29,7 @@ function [Y, X] = gen_data_true_tree(seed)
     y(I5) = wblrnd(.5,.5,sum(I5),1);
     I6 = ismember(x2,{'C','D'}) & x1 >  7;
     y(I6) = [interp1(surv1,times,rand(sum(I6),1))];
+    Y_uncensored = y;
     % Do some censoring
     cens = exprnd(censparm,N,1);
     ind = y <= cens;
