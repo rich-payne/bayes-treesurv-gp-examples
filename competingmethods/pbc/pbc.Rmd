@@ -11,24 +11,39 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Random forest
+Random forest variable importance.
 
 ```{r}
 library(targets)
 library(ggplot2)
 library(tidyr)
 library(dplyr)
+library(randomForestSRC)
+library(BART)
 tar_load(forest_fit)
 print(vimp(forest_fit)$importance)
 ```
+
+BART variable importance.
 
 ```{r}
 tar_load(bart_fit)
 sort(apply(bart_fit$varcount, 2, mean), decreasing = TRUE)
 ```
 
+Brier scores from PBC dataset:
+
 ```{r}
-tar_load(c(brier_bart, brier_forest, brier_tree))
+tar_load(c(brier_bart, brier_forest, brier_tree, brier_cox, brier_miss_cox))
+brier_cox2 <- data.frame(
+    type = rep(c("brier", "brier_miss"), each = nrow(brier_cox) * ncol(brier_cox)),
+    brier = c(
+      c(as.matrix(brier_cox)),
+      c(as.matrix(brier_miss_cox))
+    ),
+    time = rep(c(617, 1181, 1788, 2691, 3608), each = 5),
+    model = "cox"
+  )
 brier <- bind_rows(brier_bart, brier_forest) %>%
   pivot_longer(
     c("brier", "brier_miss"),
@@ -49,8 +64,41 @@ brier_tree <- brier_tree %>%
   ) %>%
   select(-t_chr) %>%
   pivot_longer("brier_miss", names_to = "type", values_to = "brier")
-brier <- bind_rows(brier, brier_tree)
-ggplot(brier, aes(factor(time), brier, fill = model)) +
-  facet_wrap(~type) +
-  geom_boxplot()
+brier <- bind_rows(brier, brier_tree, brier_cox2) %>%
+  mutate(
+    Method = case_when(
+      model == "cox" ~ "Cox",
+      model == "forest" ~ "Forest",
+      model == "tree" ~ "THM",
+      TRUE ~ model
+    ),
+    Method = factor(Method, c("Cox", "BART", "Forest", "THM")),
+    percentile = case_when(
+      time == 617 ~ "10%",
+      time == 1181 ~ "25%",
+      time == 1788 ~ "50%",
+      time == 2691 ~ "75%",
+      time == 3608 ~ "90%"
+    ),
+    percentile = factor(percentile, c("10%", "25%", "50%", "75%", "90%"))
+  )
+ggplot(
+  filter(brier, type == "brier_miss"),
+  aes(percentile, brier, fill = Method)) +
+  scale_fill_grey(start = 0.35, end = 0.95) +
+  geom_boxplot() +
+  labs(x = "Survival Percentile", y = "Brier Score") +
+  theme_bw()
+
+p <- ggplot(
+  filter(brier, type == "brier_miss"),
+  aes(percentile, brier, fill = Method, group = Method, shape = Method)) +
+  geom_point(position = position_dodge(width = 0.6), size = 3) +
+  scale_color_grey() +
+  theme_bw() +
+  scale_shape(solid = FALSE) +
+  labs(x = "Survival Percentile", y = "Brier Score")
+p
+
+ggsave("pbc_brier.jpg", plot = p, width = 7, height = 3)
 ```

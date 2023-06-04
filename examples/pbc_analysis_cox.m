@@ -5,16 +5,15 @@ data_miss = readtable('pbc_analysis_results_missing_detail.csv');
 % n_subj = size(data_ref, 1);
 n_folds = 10;
 n_params = 1e4;
-brier = zeros(n_folds, n_times);
-brier_cens = brier;
-brier_cens_miss = brier;
+brier_cens = zeros(n_folds, n_times);
+brier_cens_miss = brier_cens;
 surv_hat_indep = [];
-% surv_hat_indep = zeros(n_folds, n_subj, n_times);
-% surv_hat_ref = surv_hat_indep;
-% surv_true_indep = surv_hat_indep;
-% surv_true_ref = surv_hat_indep;
-% surv_hat_ref_lb = surv_hat_indep;
-% surv_hat_ref_ub = surv_hat_indep;
+% calculate censoring disribution for brier scores
+[f, x] = ecdf(data_all.time, 'censoring', data_all.status);
+% get interpolation, take care of duplicate x values
+[c, ~, ic] = unique(x, 'stable');
+val = accumarray(ic, 1 - f, [], @mean);
+G = griddedInterpolant(c, val, 'previous');
 for fold=1:n_folds
     fold
     data = data_all(data_all.k_fold ~= fold, :);
@@ -31,12 +30,6 @@ for fold=1:n_folds
     [c, ~, ic] = unique(H2(:, 1), 'stable');
     val = accumarray(ic, H2(:, 2), [], @mean);
     cumhaz = interp1(c, val, ts);
-    % calculate censoring disribution for brier scores
-    [f, x] = ecdf(data_all.time, 'censoring', data_all.status);
-    % get interpolation, take care of duplicate x values
-    [c, ~, ic] = unique(x, 'stable');
-    val = accumarray(ic, 1 - f, [], @mean);
-    G = griddedInterpolant(c, val, 'previous');
     n_subj = size(data_indep, 1);
     brier_sim = zeros(n_subj, n_times);
     for subj_index=1:n_subj
@@ -68,13 +61,5 @@ for fold=1:n_folds
         mean(brier_sim(miss_index(:, 5) == 0, 5))];
 end
 
-bias = squeeze(mean(surv_hat_ref - surv_true_ref, 1));
-rmse = sqrt(squeeze(mean((surv_hat_ref - surv_true_ref) .^ 2, 1)));
-coverage = squeeze(mean(surv_hat_ref_lb < surv_true_ref & surv_true_ref < surv_hat_ref_ub, 1));
-
-% writematrix(brier, 'pred_prog_results_brier_cox_model.csv');
-% writematrix(bias, 'pred_prog_results_bias_cox_model.csv');
-% writematrix(rmse, 'pred_prog_results_rmse_cox_model.csv');
-% writematrix(coverage, 'pred_prog_results_coverage_cox_model.csv');
-% writematrix(brier_cens, 'pred_prog_results_brier_cens_cox_model.csv');
-% writematrix(brier_cens_miss, 'pred_prog_results_brier_cens_miss_cox_model.csv');
+writematrix(brier_cens, 'pbc_analysis_results_brier_cens_cox_model.csv');
+writematrix(brier_cens_miss, 'pbc_analysis_results_brier_cens_miss_cox_model.csv');

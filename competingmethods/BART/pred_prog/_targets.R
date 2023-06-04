@@ -2,7 +2,7 @@ library(targets)
 library(tarchetypes)
 tar_option_set(
   packages = c("BART", "dplyr", "purrr", "tidyr", "survival"),
-  error = "abridge",
+  # error = "abridge",
   storage = "worker",
   retrieval = "worker"
 )

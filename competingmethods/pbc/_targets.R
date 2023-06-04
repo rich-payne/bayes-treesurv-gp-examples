@@ -54,5 +54,10 @@ list(
   kfold_targs,
   tar_combine(brier_forest, kfold_targs$brier_forest, command = bind_rows(!!!.x)),
   tar_combine(brier_bart, kfold_targs$brier_bart, command = bind_rows(!!!.x)),
+  tar_target(brier_miss_cox_file, "../../examples/pbc_analysis_results_brier_cens_miss_cox_model.csv", format = "file"),
+  tar_target(brier_cox_file, "../../examples/pbc_analysis_results_brier_cens_cox_model.csv", format = "file"),
+  tar_target(brier_miss_cox, read.csv(brier_miss_cox_file, header = FALSE)),
+  tar_target(brier_cox, read.csv(brier_cox_file, header = FALSE)),
+  #tar_target(brier_cox, bind_rows(mutate(brier_)))
   tar_render(report, "pbc.Rmd")
 )

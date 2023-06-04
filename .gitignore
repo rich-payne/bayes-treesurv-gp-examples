@@ -13,3 +13,4 @@ clustermq.tmpl
 *.rds
 *.html
 *standaloneApplication/
+*.jpg

@@ -40,7 +40,7 @@ n_data = size(X_new, 1);
 % quantiles for evaluation of brier scores
 % ts = quantile(Y_new, [.1, .25, .5, .75, .9]);
 % ts = round(ts, 2);
-% ts = [.55, .81, 1.13, 1.84, 2.50]; % ensure it is up to date.
+ts = [.55, .81, 1.13, 1.84, 2.50]; % ensure it is up to date.
 
 % true data generating
 a_shape = 1;

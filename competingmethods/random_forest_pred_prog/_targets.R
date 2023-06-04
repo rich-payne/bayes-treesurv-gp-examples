@@ -3,7 +3,7 @@ library(tarchetypes)
 
 tar_option_set(
   packages = c("randomForestSRC", "dplyr", "survival", "tidyr", "purrr"),
-  error = "abridge",
+  # error = "abridge",
   retrieval = "worker",
   storage = "worker"
 )
