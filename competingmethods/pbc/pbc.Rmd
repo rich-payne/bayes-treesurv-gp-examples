@@ -90,7 +90,7 @@ ggplot(
   labs(x = "Survival Percentile", y = "Brier Score") +
   theme_bw()
 
-p <- ggplot(
+ggplot(
   filter(brier, type == "brier_miss"),
   aes(percentile, brier, fill = Method, group = Method, shape = Method)) +
   geom_point(position = position_dodge(width = 0.6), size = 3) +
@@ -98,7 +98,30 @@ p <- ggplot(
   theme_bw() +
   scale_shape(solid = FALSE) +
   labs(x = "Survival Percentile", y = "Brier Score")
-p
+
+brier_mean <- brier %>%
+  filter(type == "brier_miss") %>%
+  group_by(percentile, Method) %>%
+  summarize(
+    se = sd(brier) / sqrt(n()),
+    brier = mean(brier),
+    .groups = "drop"
+  ) %>%
+  mutate(lb = brier - 2 * se, ub = brier + 2 * se)
+
+p <- ggplot(
+  brier_mean,
+  aes(percentile, brier, fill = Method, group = Method, shape = Method)) +
+  geom_point(position = position_dodge(width = .6), size = 3) +
+  geom_errorbar(
+    aes(ymin = lb, ymax = ub),
+    position = position_dodge(width = 0.6),
+    width = 0.5
+  ) +
+  scale_color_grey() +
+  theme_bw() +
+  scale_shape_manual(values = c(0:2, 4)) +
+  labs(x = "Survival Percentile", y = "Brier Score")
 
 ggsave("pbc_brier.jpg", plot = p, width = 7, height = 3)
 ```
