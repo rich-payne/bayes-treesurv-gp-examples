@@ -68,19 +68,6 @@ pred_forest <- function(forest_fit, newdata, times) {
   )
 }
 
-# pred_bart <- function(bart_fit, newdata, times) {
-#   n_obs <- nrow(newdata)
-#   newdata <- expand_grid(t = times, as.data.frame(newdata)) %>%
-#     as.matrix()
-#   pred <- predict(bart_fit, newdata = newdata)
-#   out <- newdata %>%
-#     as_tibble() %>%
-#     mutate(surv = pred$surv.test.mean)
-#   
-#   pred <- matrix(pred$surv.test.mean, nrow = n_obs, ncol = length(times)) %>%
-#     t()
-# }
-
 pred_bart <- function(bart_fit, newdata, times) {
   surv <- matrix(NA, length(times), nrow(newdata))
   newdata <- as_tibble(newdata)
