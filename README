@@ -1,5 +1,7 @@
 These files contain the code to reproduce the examples in the manuscript.
 
+The bayes-treesurv-gp directory contains the code to run the treed hazards model.
+
 Code in the examples/ directory contains the code to apply the treed hazards model (THM) and the Cox model on the primary biliary cirrhosis dataset (pbc) and the predictive/prognostic simulations.  The files include:
 
 * Tutorial.m: A tutorial on how to run the THM code.
