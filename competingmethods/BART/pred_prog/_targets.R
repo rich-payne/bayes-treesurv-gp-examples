@@ -2,12 +2,11 @@ library(targets)
 library(tarchetypes)
 tar_option_set(
   packages = c("BART", "dplyr", "purrr", "tidyr", "survival"),
-  # error = "abridge",
   storage = "worker",
   retrieval = "worker"
 )
 
-# tar_make_clustermq() configuration (okay to leave alone):
+# tar_make_clustermq() configuration
 options(clustermq.scheduler = "sge")
 options(clustermq.template = "clustermq.tmpl")
 
@@ -41,12 +40,6 @@ write_file <- function(x, file) {
   file
 }
 
-# bind_rows_bart <- function(...) {
-#   barts <- list(...)
-#   stats <- map_dfr(barts, ~ .x$stats)
-#   return(stats)
-# }
-
 list(
   data_files,
   data_files_indep,
@@ -58,5 +51,4 @@ list(
   tar_target(barts_miss, add_brier_miss(barts, missing_data)),
   tar_target(barts_file, write_file(barts, "barts.csv"), format = "file"),
   tar_target(barts_file_miss, write_file(barts_miss, "barts_miss.csv"), format = "file")
-  # tar_target(ocs, get_ocs(barts))
 )
