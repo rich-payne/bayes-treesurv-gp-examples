@@ -7,7 +7,7 @@ n_rep = 10;
 mlpost = zeros(n_sims, 1);
 maxrep = zeros(n_sims, 1);
 maxtree = cell(n_sims, 1);
-seed = 201:250; % data generating seed from simulations: MUST MATCH!
+seed = 201:250; % data generating seed from simulations
 for sim=1:n_sims
     sim
     for rep=1:n_rep
@@ -27,20 +27,11 @@ for sim=1:n_sims
             end
         end
     end
-    %[Y, X] = gen_data_true_tree(seed(sim));
-    %pdraw = get_surv_tree(maxtree{sim}, Y, X, 10000, 0, X(sim, :), [], .05, []);
-    %pdraws{sim} = pdraw;
-    % need to save pdraws for each sim
 end
 
-% Generate data to evalute quantiles for evaluation (comment when complete)
-% [Y, X] = gen_data_true_tree(seed(sim));
 [~, X_new, Y_new] = gen_data_pred_prog(12345);
 n_data = size(X_new, 1);
-% quantiles for evaluation of brier scores
-% ts = quantile(Y_new, [.1, .25, .5, .75, .9]);
-% ts = round(ts, 2);
-ts = [.55, .81, 1.13, 1.84, 2.50]; % ensure it is up to date.
+ts = [.55, .81, 1.13, 1.84, 2.50];
 
 % true data generating
 a_shape = 1;
@@ -61,7 +52,7 @@ miss_detail = [];
 % Bias, MSE, Brier, Coverage
 for sim=1:n_sims
     [Y, X] = gen_data_pred_prog(seed(sim));
-    [Y_new_brier_cens, X_new_brier, Y_new_brier] = gen_data_pred_prog(sim + 100); % ensure it is different
+    [Y_new_brier_cens, X_new_brier, Y_new_brier] = gen_data_pred_prog(sim + 100);
     thetree = maxtree{sim};
     [pdraws_all, term_node_ind] = get_surv_tree(thetree, Y, X, 10000, 0, [], ts, .05, []);
     [brier(sim, :), miss(sim, :)] = get_brier_score(thetree, Y, X, Y_new_brier, X_new_brier, ts);
@@ -86,7 +77,6 @@ for sim=1:n_sims
 end
 
 bias = squeeze(mean(qsurv - qtrue, 2, 'omitnan'));
-% rmse = squeeze(sqrt(mean(squeeze(mean((qsurv - qtrue), 1, 'omitnan') .^ 2), 1, 'omitnan')))';
 rmse = sqrt(squeeze(mean((qsurv - qtrue) .^ 2, 2, 'omitnan')));
 coverage = squeeze(mean(qsurv_lb < qtrue & qtrue < qsurv_ub, 2, 'omitnan'));
 brier_mean = mean(brier, 1);

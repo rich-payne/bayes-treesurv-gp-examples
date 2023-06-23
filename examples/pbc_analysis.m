@@ -12,9 +12,7 @@ function [] = pbc_analysis(data_file, k_fold, seed, nmcmc)
     dat_full = readtable(data_file,'Delimiter',',','ReadVariableNames',true);
     dat = dat_full(dat_full.k_fold ~= k_fold, :);
     Y = [dat.time, dat.status];
-    %X = dat(:, [4:20]);
-    X = dat(:, [4:6, 10, 11, 13, 19]); % based on abstract from https://aasldpubs.onlinelibrary.wiley.com/doi/abs/10.1002/hep.1840100102
-    % X = dat(:, [4, 13]);
+    X = dat(:, [4:6, 10, 11, 13, 19]);
     n_k = 100;
     n_reps = 10;
     n_temp = 8;

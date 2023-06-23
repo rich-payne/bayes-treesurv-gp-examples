@@ -6,7 +6,6 @@ mlpost = zeros(n_kfold, 1);
 maxrep = zeros(n_kfold, 1);
 maxtree = cell(n_kfold, 1);
 data = readtable("pbc_kfold.csv");
-%times = quantile(data.time, [.1, .25, .5, .75, .9]);
 times = [617, 1181, 1788, 2691, 3608];
 briers = zeros(n_kfold, length(times));
 miss = briers;

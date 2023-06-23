@@ -15,7 +15,6 @@ run_forest <- function(file, file_indep, file_ref, sim) {
     block.size = 1
   )
   times <- c(.55, .81, 1.13, 1.84, 2.50)
-  # get close enough.
   approx_times_index <- vapply(
     times,
     function(time, model_times) {
