@@ -1,9 +1,7 @@
 addpath(genpath('../bayes-treesurv-gp'));
 dat = readtable('pbc.csv','Delimiter',',','ReadVariableNames',true);
 Y = [dat.time, dat.status];
-%X = dat(:, [4:20]);
-X = dat(:, [4:6, 10, 11, 13, 19]); % based on abstract from https://aasldpubs.onlinelibrary.wiley.com/doi/abs/10.1002/hep.1840100102
-% X = dat(:, [4, 13]);
+X = dat(:, [4:6, 10, 11, 13, 19]);
 
 Tree_Surv(Y, X, 'burn', 0, 'nmcmc', 1000, 'filepath', '../output/pbc01/', 'saveall', 1, 'seed', 7320, 'n_parallel_temp', 8);
 Tree_Surv(Y, X, 'burn', 0, 'nmcmc', 1000, 'filepath', '../output/pbc02/', 'saveall', 1, 'seed', 7321, 'n_parallel_temp', 8, 'resume', '../output/pbc01/');
