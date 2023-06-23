@@ -2,7 +2,7 @@
 bname = '../output/sim_pred_prog';
 sim = 1;
 n_rep = 10;
-seed = 201:250; % data generating seed from simulations: MUST MATCH!
+seed = 201:250; % data generating seed from simulations
 for rep=1:n_rep
     rep
     fname = strcat([bname, '_simnum_', num2str(sim), '_rep_', num2str(rep), '/mcmc_id1.mat']);
