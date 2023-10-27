@@ -11,7 +11,7 @@ editor_options:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Random forest variable importance.
+Brier scores from PBC dataset:
 
 ```{r}
 library(targets)
@@ -20,20 +20,6 @@ library(tidyr)
 library(dplyr)
 library(randomForestSRC)
 library(BART)
-tar_load(forest_fit)
-print(vimp(forest_fit)$importance)
-```
-
-BART variable importance.
-
-```{r}
-tar_load(bart_fit)
-sort(apply(bart_fit$varcount, 2, mean), decreasing = TRUE)
-```
-
-Brier scores from PBC dataset:
-
-```{r}
 tar_load(c(brier_bart, brier_forest, brier_tree, brier_cox, brier_miss_cox))
 brier_cox2 <- data.frame(
     type = rep(c("brier", "brier_miss"), each = nrow(brier_cox) * ncol(brier_cox)),

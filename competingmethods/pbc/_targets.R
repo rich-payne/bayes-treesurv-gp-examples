@@ -58,6 +58,5 @@ list(
   tar_target(brier_cox_file, "../../examples/pbc_analysis_results_brier_cens_cox_model.csv", format = "file"),
   tar_target(brier_miss_cox, read.csv(brier_miss_cox_file, header = FALSE)),
   tar_target(brier_cox, read.csv(brier_cox_file, header = FALSE)),
-  #tar_target(brier_cox, bind_rows(mutate(brier_)))
   tar_render(report, "pbc.Rmd")
 )

@@ -3,7 +3,6 @@ library(tarchetypes)
 
 tar_option_set(
   packages = c("randomForestSRC", "dplyr", "survival", "tidyr", "purrr"),
-  # error = "abridge",
   retrieval = "worker",
   storage = "worker"
 )
@@ -14,7 +13,6 @@ options(clustermq.template = "clustermq.tmpl")
 
 # Run the R scripts in the R/ folder with your custom functions:
 tar_source()
-# source("other_functions.R") # Source other scripts as needed. # nolint
 
 filenames <- sprintf("../data/pred_prog_%d.csv", 201:250)
 filenames_indep <- sprintf("../data/pred_prog_%d.csv", 101:150)
@@ -45,13 +43,6 @@ write_file <- function(x, file) {
   file
 }
 
-# bind_rows_forest <- function(...) {
-#   forests <- list(...)
-#   stats <- map_dfr(forests, ~ .x$stats)
-#   return(stats)
-# }
-
-# Replace the target list below with your own:
 list(
   data_files,
   data_files_indep,
@@ -61,7 +52,6 @@ list(
   forest_targets,
   tar_combine(forests, forest_targets$forest, command = bind_rows(!!!.x)),
   tar_target(forests_miss, add_brier_miss(forests, missing_data)),
-  # tar_combine(brier_cens_miss, forest_targets$brier_cens_miss, command = bind_rows(!!!.x)),
   tar_target(forests_file, write_file(forests, "forests.csv"), format = "file"),
   tar_target(forests_file_miss, write_file(forests_miss, "forests_miss.csv"), format = "file")
 )

@@ -5,7 +5,6 @@ fit_bart <- function(data, k_fold = NULL) {
     x.train = x_mat,
     times = data$time,
     delta = data$status,
-    # K = 100,
     nskip = 1e3,
     ndpost = 1e4,
     keepevery = 1,

@@ -12,7 +12,6 @@ function [Y, X, Y_uncensored] = gen_data_pred_prog(seed)
     w_scale = a_scale + b_scale * x_trt .* x_biomarker;
 
     Y_uncensored = wblrnd(w_scale, w_shape, n, 1);
-    % y_cens = exprnd(20, n, 1);
     y_cens = unifrnd(0, 5, n, 1);
     censored = y_cens < Y_uncensored;
     y = Y_uncensored;

@@ -21,15 +21,6 @@ run_bart <- function(file, file_indep, file_ref, sim) {
   )
   times <- c(.55, .81, 1.13, 1.84, 2.50)
   x_pred <- expand_grid(dat, t = times)
-  # pred <- predict(post, newdata = as.matrix(select(x_pred, t, x1, x2)))
-  # pred_indep <- predict(
-  #   post,
-  #   newdata = as.matrix(select(x_pred, t, biomarker_indep, trt_indep))
-  # )
-  # pred_ref <- predict(
-  #   post,
-  #   newdata = as.matrix(select(x_pred, t, biomarker_ref, trt_ref))
-  # )
   pred_indep <- pred_bart(post, dat_indep_orig, times)
   pred_ref <- pred_bart(post, dat_ref_orig, times)
 

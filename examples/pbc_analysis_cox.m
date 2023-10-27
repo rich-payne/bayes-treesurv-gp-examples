@@ -2,13 +2,12 @@ ts = [617, 1181, 1788, 2691, 3608]; % survival quantiles
 n_times = length(ts);
 data_all = readtable("pbc_kfold.csv");
 data_miss = readtable('pbc_analysis_results_missing_detail.csv');
-% n_subj = size(data_ref, 1);
 n_folds = 10;
 n_params = 1e4;
 brier_cens = zeros(n_folds, n_times);
 brier_cens_miss = brier_cens;
 surv_hat_indep = [];
-% calculate censoring disribution for brier scores
+% calculate censoring distribution for brier scores
 [f, x] = ecdf(data_all.time, 'censoring', data_all.status);
 % get interpolation, take care of duplicate x values
 [c, ~, ic] = unique(x, 'stable');

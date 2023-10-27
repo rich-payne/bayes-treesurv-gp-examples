@@ -2,7 +2,6 @@ function X = get_x_pbc(data)
   % trt + age + sex + edema + bili + albumin + platelet
   trt = data.trt;
   age = data.age;
-  % edema0 = data.edema == 0;
   edema5 = data.edema == 0.5;
   edema1 = data.edema == 1;
   bili = data.bili;
