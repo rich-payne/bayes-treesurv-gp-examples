@@ -1,4 +1,4 @@
-These files contain the code to reproduce the examples in the manuscript.
+These files contain the code to reproduce the examples in the manuscript "A Bayesian Survival Treed Hazards Model Using Latent Gaussian Processes" accepted in *Biometrics*.
 
 The bayes-treesurv-gp directory contains the code to run the treed hazards model.
 
